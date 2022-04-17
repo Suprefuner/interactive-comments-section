@@ -399,10 +399,7 @@ const controlComment = async function () {
       //check if the textarea is empty
       target = target.closest(".btn--send")
       const targetFeed = target.closest(".feed")
-      const content = target.previousElementSibling.value
-        .split(" ")
-        .splice(1)
-        .join(" ")
+      let content = target.previousElementSibling.value
 
       if (!content.trim().length) return
 
@@ -419,6 +416,10 @@ const controlComment = async function () {
       }
 
       if (targetFeed.classList.contains("comment-area--replyTo")) {
+        content = target.previousElementSibling.value
+          .split(" ")
+          .splice(1)
+          .join(" ")
         const id = +targetFeed.previousElementSibling.getAttribute("id")
         findTargetIndex(id)
         comments[commentIndex].replies.push({

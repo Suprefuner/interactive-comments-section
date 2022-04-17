@@ -2,7 +2,7 @@
   "name": "interactive-comments-section-main2",
   "version": "1.0.0",
   "description": "![Design preview for the Interactive comments section coding challenge](./design/desktop-preview.jpg)",
-  "main": "main.html",
+  "main": "main.js",
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html --dist/dir dist"
