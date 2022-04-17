@@ -1,0 +1,16 @@
+{
+  "name": "interactive-comments-section-main2",
+  "version": "1.0.0",
+  "description": "![Design preview for the Interactive comments section coding challenge](./design/desktop-preview.jpg)",
+  "main": "main.html",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html --dist/dir dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^2.4.1"
+  }
+}

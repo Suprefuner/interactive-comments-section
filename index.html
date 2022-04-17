@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+
+    <title>Frontend Mentor | Interactive comments section</title>
+    <script defer src="main.js"></script>
+    <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+    <style>
+      /* ----------------------general setting---------------------- */
+
+      @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap");
+      :root {
+        /* color */
+        --color-primary-blue: hsl(238, 40%, 52%);
+        --color-primary-red-soft: hsl(358, 79%, 66%);
+        --color-primary-blue-grayish: hsl(239, 57%, 85%);
+        --color-primary-red-pale: hsl(357, 100%, 86%);
+
+        --color-blue-dark: hsl(212, 24%, 26%);
+        --color-blue-grayish: hsl(211, 10%, 45%);
+        --color-gray-light: hsl(223, 19%, 93%);
+        --color-grey-very-light: hsl(228, 33%, 97%);
+        --color-white: hsl(0, 0%, 100%);
+
+        /* font weight */
+        --font-regu: 400;
+        --font-semi-bold: 500;
+        --font-bold: 700;
+      }
+
+      html {
+        font-size: 62.5%;
+        box-sizing: border-box;
+      }
+
+      *,
+      *:before,
+      *:after {
+        margin: 0;
+        padding: 0;
+        box-sizing: inherit;
+        list-style: none;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        background-color: var(--color-gray-light);
+        font-size: 1.4rem;
+        color: var(--color-blue-grayish);
+        font-family: "Rubik", sans-serif;
+      }
+
+      img {
+        vertical-align: middle;
+      }
+
+      textarea {
+        font-size: 1.6rem;
+      }
+
+      .btn--group {
+        position: absolute;
+        right: 2rem;
+        bottom: 2rem;
+        transform: translateY(-50%);
+      }
+
+      .btn {
+        border: none;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.6rem;
+        cursor: pointer;
+      }
+
+      .btn--regu {
+        border: none;
+        color: var(--color-white);
+        text-transform: uppercase;
+        border-radius: 1rem;
+      }
+
+      .txt--red {
+        color: var(--color-primary-red-soft);
+      }
+
+      .txt--bold {
+        font-weight: var(--font-bold);
+      }
+
+      .txt--blue {
+        color: var(--color-primary-blue);
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 2rem;
+        padding: 2rem;
+      }
+
+      /* ----------------------feed setting---------------------- */
+
+      .feed {
+        width: 100%;
+        background-color: var(--color-white);
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto auto;
+        padding: 2rem;
+        gap: 3rem;
+        border-radius: 1rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .feed__replies {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        gap: 2rem;
+        border-left: 1px solid var(--color-primary-blue-grayish);
+        padding-left: 2rem;
+      }
+
+      .reply {
+        align-self: end;
+      }
+
+      .feed__score--control {
+        display: flex;
+        justify-content: start;
+        gap: 2rem;
+        grid-row: -2/-1;
+      }
+
+      .score--control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        padding: 1rem;
+        border-radius: 1rem;
+        background-color: var(--color-grey-very-light);
+      }
+
+      .feed__info__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .user__profile-pic {
+        width: 4rem;
+      }
+
+      .feed__info {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .user-name {
+        color: black;
+      }
+
+      .btn--edit {
+        margin-left: 1rem;
+      }
+      .my-reply-tag {
+        background-color: var(--color-primary-blue);
+        color: var(--color-white);
+        padding-block: 0.3rem;
+        padding-inline: 0.7rem;
+        border-radius: 0.5rem;
+      }
+
+      /* -------------------comment area setting------------------- */
+
+      .comment-area {
+        grid-template-columns: auto auto;
+        gap: 1.5rem;
+      }
+
+      .input__txt-area {
+        resize: none;
+        font-weight: var(--font-regu);
+        font-family: inherit;
+        padding: 1rem 1.5rem;
+        border: 1px solid var(--color-gray-light);
+        border-radius: 1rem;
+        grid-column: 1/-1;
+        grid-row: 1;
+      }
+
+      .input__txt-area:focus {
+        outline: 1px solid var(--color-primary-blue);
+      }
+
+      .comment-area .btn--regu {
+        justify-self: end;
+        padding-inline: 2.5rem;
+        background-color: var(--color-primary-blue);
+      }
+
+      /* -------------------delete comment setting------------------- */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(3px);
+        z-index: 100;
+      }
+
+      .del-comment-window {
+        position: fixed;
+        top: 50%;
+        left: 2rem;
+        right: 2rem;
+        transform: translateY(-50%);
+        background-color: var(--color-white);
+        padding: 2.5rem;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        z-index: 100;
+      }
+
+      .title {
+        font-size: 2rem;
+        font-weight: var(--font-semi-bold);
+        color: var(--color-blue-dark);
+      }
+
+      .del-comment__content {
+        font-size: 1.6rem;
+      }
+
+      .btn-wrapper {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .btn-wrapper .btn--regu {
+        padding: 2rem 3rem;
+        font-weight: var(--font-bold);
+        font-size: 1.5rem;
+      }
+
+      .btn--cancel {
+        background-color: var(--color-blue-grayish);
+      }
+
+      .btn--update {
+        background-color: var(--color-primary-blue);
+      }
+
+      .btn--del-big {
+        background-color: var(--color-primary-red-soft);
+      }
+
+      .replying-to {
+        color: var(--color-primary-blue);
+        font-weight: var(--font-bold);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* -----------------------RWD setting----------------------- */
+
+      @media screen and (min-width: 550px) {
+        body {
+          justify-content: center;
+          font-size: 1.6rem;
+        }
+
+        .hidden {
+          display: none;
+        }
+
+        .container {
+          max-width: 80rem;
+        }
+
+        .feed {
+          /* grid-template-columns: auto auto; */
+          grid-template-columns: min-content auto;
+          /* grid-template-columns: fit-content(1rem) auto; */
+        }
+
+        .feed__body {
+          grid-row: 1/-1;
+        }
+
+        .feed__replies {
+          align-self: end;
+          width: 95%;
+          padding-left: 0;
+        }
+
+        .reply {
+          width: 94%;
+        }
+
+        .feed__score--control {
+          grid-column: 1/2;
+          grid-row: 1;
+        }
+
+        .feed__info {
+          grid-column: 2/-1;
+        }
+
+        .score--control {
+          flex-direction: column;
+        }
+
+        .btn,
+        .btn--regu {
+          position: relative;
+          transition: 0.3s;
+          cursor: pointer;
+        }
+
+        .btn--group {
+          position: relative;
+          right: 0;
+          bottom: 0;
+          transform: translateY(0);
+        }
+
+        .btn-update-wrap {
+          display: flex;
+          justify-content: end;
+          margin-top: 1.5rem;
+          font-size: 1rem;
+        }
+
+        .btn--update {
+          padding: 2rem;
+        }
+
+        .score--plus,
+        .score--minus {
+          transition: 0.3s;
+        }
+
+        .comment-area {
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+        }
+
+        .input__txt-area {
+          width: 100%;
+          cursor: pointer;
+        }
+
+        .btn--send {
+          padding-block: 1.5rem;
+        }
+        .del-comment-window {
+          left: 0;
+          right: 0;
+          margin: auto;
+          max-width: 375px;
+        }
+      }
+
+      @media (hover: hover) {
+        .btn--edit:hover,
+        .btn--del:hover,
+        .btn--reply:hover,
+        .btn--regu:hover {
+          filter: opacity(0.5);
+          cursor: pointer;
+        }
+
+        .score--plus:hover,
+        .score--minus:hover {
+          filter: saturate(100);
+          cursor: pointer;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <div class="overlay hidden"></div>
+      <div class="del-comment-window hidden">
+        <h3 class="title">Delete comment</h3>
+        <p class="del-comment__content">
+          Are you sure you want to delet this comment? This will remove the
+          comment and can't be undone.
+        </p>
+        <div class="btn-wrapper">
+          <button class="btn--regu btn--cancel">no, cancel</button>
+          <button class="btn--regu btn--del-big">yes, delete</button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
+
+<!-- <div class="feed comment" id="${comment.id}">
+        <div class="feed__score--control">
+          <div class="score--control">
+            <img src="./images/icon-plus.svg" alt="plus" class="score--plus" />
+            <span class="feed__score txt--bold txt--blue">0</span>
+            <img
+              src="./images/icon-minus.svg"
+              alt="minus"
+              class="score--minus"
+            />
+          </div>
+        </div>
+        <div class="feed__body">
+          <div class="feed__info__header">
+            <div class="feed__info">
+              <img
+                src="./images/avatars/image-amyrobson.png"
+                class="user__profile-pic"
+                alt="user's profile picture"
+              />
+              <span class="user-name txt--bold">Joe</span
+              ><span class="my-reply-tag">you</span>
+              <span class="created-at text">Now</span>
+            </div>
+            <div class="btn btn--group">
+              <button class="btn btn--del">
+                <img src="./images/icon-delete.svg" alt="delete button" />
+                <span class="btn-txt txt--bold txt--red">Delete</span>
+              </button>
+              <button class="btn btn--edit">
+                <img src="./images/icon-edit.svg" alt="edit button" />
+                <span class="btn-txt txt--bold txt--blue">Edit</span>
+              </button>
+            </div>
+          </div>
+          <textarea
+            name="comment"
+            id="input__txt-area"
+            cols="30"
+            rows="5"
+            class="input__txt-area"
+            placeholder="Add a comment..."
+          >
+I love you</textarea
+          >
+          <div class="btn-wrapper">
+            <button class="btn--regu btn--update">
+              <span class="btn-txt txt--bold">update</span>
+            </button>
+          </div>
+        </div>
+      </div> -->
